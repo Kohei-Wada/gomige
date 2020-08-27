@@ -16,15 +16,14 @@ typedef struct {
     int y;
     int vx;
     int vy;
-    int len;
-}SNAKE;
+}GOMI;
 
 
 int die = 0;
 int num_of_obs = 10;
 int stage[X][Y] = {0};
 int next_stage[X][Y] = {0};
-SNAKE snake = {X/2, Y/2, 1, 0};
+GOMI gomi = {X/2, Y/2, 1, 0};
 
 static struct termios old, current;
 static int read_char = -1;
@@ -95,6 +94,7 @@ char ch;
 
 void init_obs()
 {
+    srand((unsigned int)time(NULL));
     for(int i = 0; i < num_of_obs; ++i)
     {
         int x = rand()%(X-4);
@@ -154,27 +154,27 @@ void set_obs(void)
 
 
 
-void next_snake(void)
+void next_gomi(void)
 {
     if(kbhit()){
         char ch = getch();
         switch (ch) {
-            case 'a': snake.vx = -1; snake.vy = 0; break;
-            case 'f': snake.vx = 1 ; snake.vy = 0; break;
-            case 'e': snake.vx = 0 ; snake.vy = -1; break;
-            case 'd': snake.vx = 0 ; snake.vy = 1; break;
+            case 'a': gomi.vx = -1; gomi.vy = 0; break;
+            case 'f': gomi.vx = 1 ; gomi.vy = 0; break;
+            case 'e': gomi.vx = 0 ; gomi.vy = -1; break;
+            case 'd': gomi.vx = 0 ; gomi.vy = 1; break;
             case 'q': die = 1; break;
         }
 
     }
 
-    snake.x += snake.vx;
-    snake.y += snake.vy;
+    gomi.x += gomi.vx;
+    gomi.y += gomi.vy;
 
-    if(stage[snake.x][snake.y] == 2)
+    if(stage[gomi.x][gomi.y] == 2)
         die = 1;
 
-    if(snake.x < 0 || snake.x > X || snake.y < 0 || snake.y > Y)
+    if(gomi.x < 0 || gomi.x > X || gomi.y < 0 || gomi.y > Y)
         die = 1;
 
 }
@@ -183,13 +183,13 @@ void next_snake(void)
 
 int next(void)
 {
-    next_snake();
+    next_gomi();
 
     if(die)
         return 0;
 
     memcpy(next_stage, stage, sizeof(stage));
-    next_stage[snake.x][snake.y] = 1;
+    next_stage[gomi.x][gomi.y] = 1;
 
     return 1;
 }
